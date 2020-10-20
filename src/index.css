@@ -65,12 +65,6 @@ td.board-cell.win.o>svg[aria-label="O"]>path{
   stroke: red !important;
 }
 
-#content{
-  margin: auto;
-  width: 200px;
-  height: 200px;
-}
-
 #winner_title>span{
   text-transform: uppercase;
 }
@@ -224,7 +218,7 @@ html .kp-blk .xpdopen .viOShc {
   overflow: hidden
 }
 
-.turn-table g-raised-button.TTT-active {
+.turn-table button.TTT-active {
   border-bottom-color: #14bdac;
   box-shadow: 0 4px 5px rgba(0, 0, 0, .16);
   box-shadow: 0 4px 5px rgba(0, 0, 0, .16)
@@ -354,7 +348,7 @@ svg.fill-content {
   border-right: none
 }
 
-.turn-table g-raised-button {
+.turn-table button {
   border-bottom: 2px solid transparent;
   color: rgba(0, 0, 0, .54);
   font-size: 24px;
@@ -366,7 +360,7 @@ svg.fill-content {
   width: 100%
 }
 
-.turn-table g-raised-button:active {
+.turn-table button:active {
   box-shadow: 0 1px 1px rgba(0, 0, 0, .16);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .16)
 }
@@ -677,7 +671,7 @@ html:not(.zAoYTe) .hide-focus-ring {
   float: right
 }
 
-g-raised-button {
+button {
   display: inline-block;
   margin: 0 4px;
   position: relative

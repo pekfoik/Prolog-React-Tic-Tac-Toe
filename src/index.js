@@ -30,43 +30,16 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            squares: Array(9).fill(null),
-            xIsNext: true,
-        };
-    }
-
-    handleClick(i) {
-        const squares = this.state.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
-            return;
-        }
-        squares[i] = this.state.xIsNext ? 'x' : 'o';
-        this.setState({
-            squares: squares,
-            xIsNext: !this.state.xIsNext,
-        });
-    }
-
     renderSquare(i) {
         return (
             <Square
-                value={this.state.squares[i]}
-                onClick={() => this.handleClick(i)}
+                value={this.props.squares[i]}
+                onClick={() => this.props.onClick(i)}
             />
         );
     }
 
     render() {
-        const winner = calculateWinner(this.state.squares);
-        let status;
-        if (winner) {
-            status = 'Winner: ' + winner;
-        } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
         return (
 
             <div className="board">
@@ -106,17 +79,84 @@ class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-                <div className="status">{status}</div>
             </div>
         );
     }
 }
 
+function Manager(props) {
+    return (
+        <div className="game-manager">
+            <table className="turn-table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext&&!props.won ? "TTT-active" : "")} tabIndex={0}>
+                                <div className="fSXkBc"><svg aria-label="X" role="img" viewBox="0 0 128 128">
+                                    <path className="svg-item" d="M16,16L112,112" />
+                                    <path className="svg-item" d="M112,16L16,112" />
+                                </svg><span>-</span></div>
+                            </button>
+                        </td>
+                        <td>
+                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext||props.won ? "" : "TTT-active")} tabIndex={0}>
+                                <div className="fSXkBc"><svg aria-label="O" role="img" viewBox="0 0 128 128">
+                                    <path className="svg-item" d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16">
+                                    </path>
+                                </svg><span>-</span></div>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p className="turn-anouncer">
+                <span style={{ opacity: (props.xIsNext&&!props.won ? 1: 0) }}>
+                    <svg aria-label="X" role="img" viewBox="0 0 128 128">
+                        <path className="svg-item" d="M16,16L112,112" />
+                        <path className="svg-item" d="M112,16L16,112" />
+                    </svg>Turn</span>
+                <span style={{ opacity: (props.xIsNext||props.won ? 0: 1) }}>
+                    <svg aria-label="O" role="img" viewBox="0 0 128 128">
+                        <path className="svg-item" d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16" />
+                    </svg> Turn</span>
+                <span style={{ opacity: props.won?1:0 }}>Game Over! Winner: {props.won? props.won.toUpperCase(): ""}</span>
+            </p>
+        </div>
+    );
+}
+
 class Game extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            squares: Array(9).fill(null),
+            xIsNext: true,
+        };
+    }
+    
+    handleClick(i) {
+        const squares = this.state.squares.slice();
+        if (calculateWinner(squares) || squares[i]) {
+            return;
+        }
+        squares[i] = this.state.xIsNext ? 'x' : 'o';
+        this.setState({
+            squares: squares,
+            xIsNext: !this.state.xIsNext,
+        });
+    }
     render() {
         return (
             <div className="game">
-                <Board />
+                <Manager 
+                    xIsNext={this.state.xIsNext}
+                    won={calculateWinner(this.state.squares)}
+                />
+                <Board
+                    squares={this.state.squares}
+                    xIsNext={this.state.xIsNext}
+                    onClick={(i) => this.handleClick(i)}
+                />
                 <div className="game-info">
                     <div>{/* status */}</div>
                     <ol>{/* TODO */}</ol>
@@ -149,6 +189,15 @@ function calculateWinner(squares) {
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
             return squares[a];
         }
+    }
+    let noNull = true;
+    squares.forEach(square => {
+        if (square === null) {
+            noNull = false;
+        }
+    })
+    if (noNull) {
+        return "Draw!"
     }
     return null;
 }
