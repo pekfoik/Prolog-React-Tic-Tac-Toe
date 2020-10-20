@@ -8,7 +8,7 @@ function Square(props) {
             <svg aria-label="X" role="img" viewBox="0 0 128 128" style={{ display: "none" }}>
                 <path className="svg-item" d="M16,16L112,112"
                     style={{
-                        "stroke": "rgb(84, 84, 84)",
+                        stroke: "rgb(84, 84, 84)",
                         strokeDasharray: "135.764",
                         strokeDashoffset: "0"
                     }}>
