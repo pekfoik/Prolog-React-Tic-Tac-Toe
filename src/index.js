@@ -91,7 +91,7 @@ function Manager(props) {
                 <tbody>
                     <tr>
                         <td>
-                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext&&!props.won ? "TTT-active" : "")} tabIndex={0}>
+                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext && !props.won ? "TTT-active" : "")} tabIndex={0}>
                                 <div className="fSXkBc"><svg aria-label="X" role="img" viewBox="0 0 128 128">
                                     <path className="svg-item" d="M16,16L112,112" />
                                     <path className="svg-item" d="M112,16L16,112" />
@@ -99,7 +99,7 @@ function Manager(props) {
                             </button>
                         </td>
                         <td>
-                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext||props.won ? "" : "TTT-active")} tabIndex={0}>
+                            <button className={"Gfzyee hide-focus-ring zPNTne R1smN Pjsr7c " + (props.xIsNext || props.won ? "" : "TTT-active")} tabIndex={0}>
                                 <div className="fSXkBc"><svg aria-label="O" role="img" viewBox="0 0 128 128">
                                     <path className="svg-item" d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16">
                                     </path>
@@ -110,16 +110,16 @@ function Manager(props) {
                 </tbody>
             </table>
             <p className="turn-anouncer">
-                <span style={{ opacity: (props.xIsNext&&!props.won ? 1: 0) }}>
+                <span style={{ opacity: (props.xIsNext && !props.won ? 1 : 0) }}>
                     <svg aria-label="X" role="img" viewBox="0 0 128 128">
                         <path className="svg-item" d="M16,16L112,112" />
                         <path className="svg-item" d="M112,16L16,112" />
                     </svg>Turn</span>
-                <span style={{ opacity: (props.xIsNext||props.won ? 0: 1) }}>
+                <span style={{ opacity: (props.xIsNext || props.won ? 0 : 1) }}>
                     <svg aria-label="O" role="img" viewBox="0 0 128 128">
                         <path className="svg-item" d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16" />
                     </svg> Turn</span>
-                <span style={{ opacity: props.won?1:0 }}>Game Over! Winner: {props.won? props.won.toUpperCase(): ""}</span>
+                <span style={{ opacity: props.won ? 1 : 0 }}>Game Over! Winner: {props.won ? props.won.toUpperCase() : ""}</span>
             </p>
         </div>
     );
@@ -133,22 +133,29 @@ class Game extends React.Component {
             xIsNext: true,
         };
     }
-    
-    playCircle(){
-        fetch("/next_move?pos=[" + this.state.squares.toString() + "]").then(
-            (newPos) =>{
-                console.log("P:");
-                console.log(newPos);
-                this.setState({
-                    squares: newPos,
-                    xIsNext: true,
+
+    playCircle(squares) {
+        let newSquares = [];
+        console.log(squares);
+        squares = squares.map(square => square===null? "null":square);
+        console.log(squares);
+        fetch("/next_move?pos=[" + squares.toString() + "]").then(
+            (newPos) => {
+                newPos.text().then(data => {
+                    newSquares = data.substring(1, data.length - 1).split(',');
+                    newSquares = newSquares.map(item => item==="nil"? null:item);
+                    console.log(newSquares);
+                    this.setState({
+                        squares: newSquares,
+                        xIsNext: true,
+                    });
                 });
             }
         )
     }
 
     handleClick(i) {
-        if(this.state.xIsNext){
+        if (this.state.xIsNext) {
             const squares = this.state.squares.slice();
             if (calculateWinner(squares) || squares[i]) {
                 return;
@@ -158,13 +165,16 @@ class Game extends React.Component {
                 squares: squares,
                 xIsNext: false,
             });
-            this.playCircle();
+            if (calculateWinner(squares)) {
+                return;
+            }
+            this.playCircle(squares);
         }
     }
     render() {
         return (
             <div className="game">
-                <Manager 
+                <Manager
                     xIsNext={this.state.xIsNext}
                     won={calculateWinner(this.state.squares)}
                 />

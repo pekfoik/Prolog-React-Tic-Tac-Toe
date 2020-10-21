@@ -6,23 +6,33 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
 //Define public ,views and partials path
-const publicPath = path.join(__dirname, '..', 'public');
-const viewsPath = path.join(__dirname, '..', 'build');
+const publicPath = path.join(__dirname, '..', 'build');
+// const viewsPath = path.join(__dirname, '..', 'build');
 
-app.set('views', viewsPath);
+// app.set('views', viewsPath);
 app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
-  res.render('index');
+    console.log("hi");
+    res.sendFile(path.join('..', 'build', 'index.html'));
 });
 
-app.get('/next_move', (req, res) => {
-    console.log(req.query.pos);
-    res.send("[nil,nil,nil,nil,nil,nil,nil,nil,nil]");
+app.get('/next_move', async (req, res) => {
+    try {
+        let newPos = req.query.pos.substring(1,req.query.pos.length-1).split(',');
+        newPos = newPos.map(item => {
+            return (item === 'null' ? 'nil' : item)
+        });
+        const query = '/Users/bini/Desktop/playground/react-prolog/public/myprog [' + newPos + ']';
+        const { stdout, stderr } = await exec(query);
+        res.send(stdout);
+    } catch (err) {
+        res.send(err);
+    };
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Example app listening at http://localhost:${port}`);
 });
 
 // const util = require('util');
