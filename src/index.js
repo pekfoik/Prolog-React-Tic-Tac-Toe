@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import './index.css';
 
 function Square(props) {
@@ -135,16 +134,32 @@ class Game extends React.Component {
         };
     }
     
+    playCircle(){
+        fetch("/next_move?pos=[" + this.state.squares.toString() + "]").then(
+            (newPos) =>{
+                console.log("P:");
+                console.log(newPos);
+                this.setState({
+                    squares: newPos,
+                    xIsNext: true,
+                });
+            }
+        )
+    }
+
     handleClick(i) {
-        const squares = this.state.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
-            return;
+        if(this.state.xIsNext){
+            const squares = this.state.squares.slice();
+            if (calculateWinner(squares) || squares[i]) {
+                return;
+            }
+            squares[i] = 'x';
+            this.setState({
+                squares: squares,
+                xIsNext: false,
+            });
+            this.playCircle();
         }
-        squares[i] = this.state.xIsNext ? 'x' : 'o';
-        this.setState({
-            squares: squares,
-            xIsNext: !this.state.xIsNext,
-        });
     }
     render() {
         return (
@@ -202,16 +217,3 @@ function calculateWinner(squares) {
     }
     return null;
 }
-
-// const util = require('util');
-// const exec = util.promisify(require('child_process').exec);
-// async function lsWithGrep() {
-//   try {
-//       const { stdout, stderr } = await exec('/Users/bini/Desktop/playground/react-prolog/public/myprog [nil,nil,nil,nil,x,nil,nil,nil,nil]');
-//       console.log('stdout:', stdout);
-//       console.log('stderr:', stderr);
-//   }catch(err){
-//         console.error(err);
-// };
-// };
-// lsWithGrep();
