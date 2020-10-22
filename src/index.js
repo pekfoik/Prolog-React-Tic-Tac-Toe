@@ -168,18 +168,20 @@ class Game extends React.Component {
         fetch("/next_move?pos=[" + squares.toString() + "]&diff=" + this.state.diff).then(
             (newPos) => {
                 newPos.text().then(data => {
-                    newSquares = data.substring(1, data.length - 1).split(',');
-                    newSquares = newSquares.map(item => item === "nil" ? null : item);
-                    this.setState({
-                        squares: newSquares,
-                        xIsNext: true,
-                    });
-                    if(calculateWinner(newSquares)){
-                        let s = (this.state.oScore + 1);
+                    setTimeout(()=>{
+                        newSquares = data.substring(1, data.length - 1).split(',');
+                        newSquares = newSquares.map(item => item === "nil" ? null : item);
                         this.setState({
-                            oScore: s,
-                        })
-                    }
+                            squares: newSquares,
+                            xIsNext: true,
+                        });
+                        if(calculateWinner(newSquares)){
+                            let s = (this.state.oScore + 1);
+                            this.setState({
+                                oScore: s,
+                            })
+                        }
+                    }, 300);
                 });
             }
         )
