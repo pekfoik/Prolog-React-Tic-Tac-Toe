@@ -158,6 +158,7 @@ class Game extends React.Component {
     restart() {
         this.setState({
             squares: Array(9).fill(null),
+            xIsNext: true,
         })
     }
 
@@ -173,6 +174,12 @@ class Game extends React.Component {
                         squares: newSquares,
                         xIsNext: true,
                     });
+                    if(calculateWinner(newSquares)){
+                        let s = (this.state.oScore + 1);
+                        this.setState({
+                            oScore: s,
+                        })
+                    }
                 });
             }
         )
@@ -188,10 +195,6 @@ class Game extends React.Component {
         if (this.state.xIsNext) {
             const squares = this.state.squares.slice();
             if (calculateWinner(squares) || squares[i]) {
-                let s = (this.state.oScore + 1);
-                this.setState({
-                    oScore: s
-                })
                 return;
             }
             squares[i] = 'x';
@@ -200,10 +203,12 @@ class Game extends React.Component {
                 xIsNext: false,
             });
             if (calculateWinner(squares)) {
-                let s = (this.state.xScore + 1);
-                this.setState({
-                    xScore: s
-                })
+                if(calculateWinner(squares) != "Draw!"){
+                    let s = (this.state.xScore + 1);
+                    this.setState({
+                        xScore: s,
+                    })
+                }
                 return;
             }
             this.playCircle(squares);
