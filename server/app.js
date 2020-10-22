@@ -43,7 +43,7 @@ app.get('/next_move', async (req, res) => {
         } else {
             diff = 1;
         }
-        const query = '/Users/bini/Desktop/playground/react-prolog/public/myprogv2 [' + newPos + '] ' + diff;
+        const query = './public/myprogv2 [' + newPos + '] ' + diff;
         const { stdout, stderr } = await exec(query);
         res.send(stdout);
     } catch (err) {
