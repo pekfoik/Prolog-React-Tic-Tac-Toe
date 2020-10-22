@@ -1,11 +1,13 @@
 %The alpha-beta algorithm
-alphabeta(Pos,Alpha,Beta,GoodPos,Val):-
+alphabeta(Pos,Alpha,Beta,GoodPos,Val,Depth):-
+	Depth>0,
     moves(Pos,Poslist),!,
-    boundedbest(Poslist,Alpha,Beta,GoodPos,Val);
+    boundedbest(Poslist,Alpha,Beta,GoodPos,Val,Depth);
     h(Pos,Val).
 
-boundedbest([Pos|PosList],Alpha,Beta,GoodPos,GoodVal):-
-    alphabeta(Pos,Alpha,Beta,_,Val),
+boundedbest([Pos|PosList],Alpha,Beta,GoodPos,GoodVal,Depth):-
+	Depth1 is Depth-1,
+    alphabeta(Pos,Alpha,Beta,_,Val,Depth1),
     goodenough(PosList,Alpha,Beta,Pos,Val,GoodPos,GoodVal).
 
 goodenough([],_,_,Pos,Val,Pos,Val):-!. %No other candidate
@@ -14,7 +16,8 @@ goodenough(_,Alpha,Beta,Pos,Val,Pos,Val):-
     max_to_move(Pos),Val<Alpha,!. %Minimizer attained lower bound
 goodenough(PosList,Alpha,Beta,Pos,Val,GoodPos,GoodVal):-
     newbounds(Alpha,Beta,Pos,Val,NewAlpha,NewBeta), %Refine bounds
-    boundedbest(PosList,NewAlpha,NewBeta,Pos1,Val1),
+	depth(X),
+    boundedbest(PosList,NewAlpha,NewBeta,Pos1,Val1,X),
     betterof(Pos,Val,Pos1,Val1,GoodPos,GoodVal).
 
 newbounds(Alpha,Beta,Pos,Val,Val,Beta):-
@@ -139,6 +142,8 @@ convert_indexes([_|Rest], [0|OtherRest]):-
 		convert_indexes(Rest, OtherRest).
 
 main:-
-    current_prolog_flag(argv, Argv),Argv=[L|_],atom_to_term(L,T,[]),
-    alphabeta(T, -1000, 1000, P, _),
+    current_prolog_flag(argv, Argv),Argv=[L|Other],atom_to_term(L,T,[]),
+	Other=[L2|_],atom_to_term(L2,Depth,[]),
+	asserta(depth(Depth)),
+    alphabeta(T, -1000, 1000, P, _,Depth),
     write(P).
