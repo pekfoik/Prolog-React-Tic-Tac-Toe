@@ -6,7 +6,8 @@ A tic-tac-toe game that uses prolog to compute the next move for the computer
 
 # How to use
 1. Download the files from [github](https://github.com/pekfoik/Prolog-React-Tic-Tac-Toe)
-1. In the terminal (I am using macos, not sure if it changes anything), run these commands:
+1. run the following commands (in order):
+  * `npm install`
   * `npm run build`
   * `npm start`
 1. Open [localhost:3000](http://localhost:3000) in your browser
